@@ -22,13 +22,16 @@
 
 {-# OPTIONS --erasure --guardedness #-}
 
+module 00-Install where
 
 open import Data.String.Base
 open import IO.Base
 open import IO.Finite
+open import IO.Effectful
+open import IO.Instances
 
 main : Main
 main = run do
   putStrLn "What is your name?"
   str ← getLine
-  putStrLn ("Hello " ++ str ++ "!!")
+  putStrLn ("Hello " ++ str ++ "!")

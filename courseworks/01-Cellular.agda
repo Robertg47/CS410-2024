@@ -1,6 +1,3 @@
-{-# OPTIONS --guardedness #-}
-
-
 ------------------------------------------------------------------------
 -- Coursework 1: Cellular (100 marks, 40% of course total)
 --
@@ -38,17 +35,17 @@
 ------------------------------------------------------------------------
 -- Marks
 --
--- Boolean functions     5   MARKS   -- 5 - 5
--- Equality relation     1   MARK    -- 1 - 6
--- First proofs          6   MARKS   -- 6 - 12
--- Natural numbers       13  MARKS   -- 13 - 25
--- Forwards lists        11  MARKS   -- 11- 36
--- Backwards lists       13  MARKS   -- 13 - 49
--- Combining lists       2   MARKS   -- 2  - 51
--- Quantifiers           9   MARKS   -- 9  - 60
--- Membership            15  MARKS   -- 15  - 75
--- Cellular automaton    10  MARKS   -- 10   - 85
--- Extension             15  MARKS   
+-- Boolean functions     5   MARKS
+-- Equality relation     1   MARK
+-- First proofs          6   MARKS
+-- Natural numbers       13  MARKS
+-- Forwards lists        11  MARKS
+-- Backwards lists       13  MARKS
+-- Combining lists       2   MARKS
+-- Quantifiers           9   MARKS
+-- Membership            15  MARKS
+-- Cellular automaton    10  MARKS
+-- Extension             15  MARKS
 --
 -- TOTAL                 100 MARKS
 
@@ -56,11 +53,8 @@
 -- Warming up: data, functions, proofs
 ------------------------------------------------------------------------
 
--- what does it mean a (safe!) function in quantifiers?
-
 -- We will be mentioning a Set or two, so let declare variables for them
 variable A B C D : Set
-
 
 ------------------------------------------------------------------------
 -- Boolean functions (5 MARKS)
@@ -79,35 +73,28 @@ data Bool : Set where
 -- (1 MARK)
 -- Implement boolean negation
 not : Bool → Bool
-not true = false
-not false = true
+not = {!!}
 
-
--- (1 MARK)ot
+-- (1 MARK)
 -- Implement boolean conjunction
 _∧_ : Bool → Bool → Bool
-true ∧ y = y
-false ∧ x₁ = false
-
+_∧_ = {!!}
 
 -- (1 MARK)
 -- Implement boolean disjunction
 _∨_ : Bool → Bool → Bool
-true ∨ x₁ = true
-false ∨ y = y
+_∨_ = {!!}
 
 -- (1 MARK)
 -- Implement boolean exclusive or
 _xor_ : Bool → Bool → Bool
-true xor y = not y
-false xor y = y
+_xor_ = {!!}
 
 -- (1 MARK)
 -- Implement if then else
 infix 0 if_then_else_
 if_then_else_ : Bool → A → A → A
-if true then x1 else x2 = x1
-if false then x1 else x2 = x2
+if_then_else_ = {!!}
 
 ------------------------------------------------------------------------
 -- Equality relation (1 MARK)
@@ -148,44 +135,38 @@ data ⊥ : Set where
 -- Two terms `x` and `y` are distinct precisely when assuming that there
 -- are equal leads to a contradiction i.e. a proof of the empty type.
 _≢_ : (x y : A) → Set
-x ≢ y = x ≡ y → ⊥ 
+x ≢ y = x ≡ y → ⊥
 
 -- (1 MARK)
 -- For instance: true and false are not equal!
--- how is the assumption happening ? ========================================
 _ : true ≢ false
-_ = \ ()
+_ = {!!}
 
-
---------------------------------------------------------------------------
+------------------------------------------------------------------------
 -- First proofs (6 MARKS)
 
 -- (1 MARK)
--- Prove that boolean negation is involutive -- why is it only boolean negation??
+-- Prove that boolean negation is involutive
 not-involutive : ∀ b → not (not b) ≡ b
-not-involutive true = refl
-not-involutive false = refl
+not-involutive = {!!}
 
 -- (1 MARK)
 -- Prove that boolean negation is not the identity function
 not-not-id : ∀ b → not b ≢ b
-not-not-id true ()
-not-not-id false ()
+not-not-id = {!!}
 
 -- Prove the following de Morgan laws.
 -- Bonus for style: good operator definitions can lead to short proofs
 
 -- (2 MARKS)
 not-and : ∀ b c → not (b ∧ c) ≡ not b ∨ not c
-not-and true c = refl
-not-and false c = refl
+not-and = {!!}
 
 -- (2 MARKS)
 not-or : ∀ b c → not (b ∨ c) ≡ not b ∧ not c
-not-or true c = refl
-not-or false c = refl
+not-or = {!!}
 
---------------------------------------------------------------------------
+------------------------------------------------------------------------
 -- Natural numbers (13 MARKS)
 
 -- The inductive type of natural numbers
@@ -199,52 +180,35 @@ variable m n : ℕ
 -- (1 MARK)
 -- Implement addition by recursion on the first argument
 _+_ : ℕ → ℕ → ℕ
-zero + n = n
-suc m + n = suc (m + n)
+m + n = {!!}
 
 -- (1 MARK)
 -- Prove that `_+_` commutes with `suc`
 +-suc : ∀ m n → m + suc n ≡ suc (m + n)
-+-suc zero n = refl
-+-suc (suc m) n = cong suc (+-suc m n)
++-suc = {!!}
 
 -- (1 MARK)
 -- Prove that addition is a monoid
 zero-+ : ∀ m → zero + m ≡ m
-zero-+ m = refl
+zero-+ = {!!}
+
 -- (1 MARK)
--- +-zero zero = refl
--- +-zero (suc m) = {!+-zero m!}
 +-zero : ∀ m → m + zero ≡ m
-+-zero zero = refl
-+-zero (suc m) = cong suc (+-zero m)
-
-meqn->smeqsn : ∀ {x y : ℕ} → x ≡ y → (suc x) ≡ (suc y)
-meqn->smeqsn {x} {x} refl = refl
-
-two-zeroes : ∀ m →  zero + m ≡ m + zero
-two-zeroes zero = refl
-two-zeroes (suc m) = cong suc (two-zeroes m)
-
-two-zeroes-rev : ∀ m →  m + zero ≡ zero + m
-two-zeroes-rev zero = refl
-two-zeroes-rev (suc m) = cong suc (two-zeroes-rev m)
++-zero = {!!}
 
 -- (3 MARKS)
 -- hint: +-suc could be useful
 +-commutative : ∀ m n → m + n ≡ n + m
-+-commutative m zero = two-zeroes-rev m
-+-commutative m (suc n) = transitive (+-suc m n) (meqn->smeqsn (+-commutative m n)) 
++-commutative = {!!}
 
 -- (1 MARK)
 +-associative : ∀ m n p → (m + n) + p ≡ m + (n + p)
-+-associative zero n p = refl
-+-associative (suc m) n p = cong suc (+-associative m n p)
++-associative = {!!}
 
 -- (1 MARK)
 -- Prove that suc is injective
 suc-injective : ∀ {m n} → suc m ≡ suc n → m ≡ n
-suc-injective {m} {.m} refl = refl
+suc-injective = {!!}
 
 -- The sum type
 data _⊎_ (A B : Set) : Set where
@@ -254,32 +218,14 @@ data _⊎_ (A B : Set) : Set where
 -- (1 MARK)
 -- Implement bimap
 bimap : (A → C) → (B → D) → A ⊎ B → C ⊎ D
-bimap f g (inj₁ x) = inj₁ (f x)
-bimap f g (inj₂ x) = inj₂ (g x)
+bimap f g s = {!!}
 
-
-m!=n->sm!=sn : ∀ {x y : ℕ} → x ≢ y → (suc x) ≢ (suc y)
-m!=n->sm!=sn {zero} {zero} x1 x2 = x1 refl
-m!=n->sm!=sn {suc x} {suc x} x1 refl = x1 refl
-
-
--- assumptions ^
--- suc x != suc y, suc x = suc y
--- refl suc x = suc y -> suc x = suc x   ->   suc x != suc x AND suc x = suc x -> _|_
-
---m!=n->sm!=n : ∀ {x y : ℕ} → x ≢ y → (suc x) ≢ y
---m!=n->sm!=n {zero} {zero} x1 x2 = x1 refl
---m!=n->sm!=n {x} {.(suc x)} x1 refl = {!!}
-
--- (3 MARKS)6
+-- (3 MARKS)
 -- Prove that equality of natural numbers is decidable
-≡-dec : (m n : ℕ) → (m ≡ n) ⊎ (m ≢ n) 
-≡-dec zero zero = inj₁ refl
-≡-dec zero (suc n) = inj₂ \ ()
-≡-dec (suc m) zero = inj₂ \ ()
-≡-dec (suc m) (suc n) = bimap meqn->smeqsn m!=n->sm!=sn (≡-dec m n) 
+≡-dec : (m n : ℕ) → (m ≡ n) ⊎ (m ≢ n)
+≡-dec = {!!}
 
---------------------------------------------------------------------------
+------------------------------------------------------------------------
 -- Lists
 -- The state of a cellular automaton can be represented using a list of
 -- cells. Let us introduce two types of lists (forwards denoted using `>`,
@@ -302,19 +248,19 @@ data List> (A : Set) : Set where
 -- (1 MARK)
 -- Give the list [>1,2,3]
 [>1,2,3] : List> ℕ
-[>1,2,3] =  1 ,- 2 ,- 3 ,- []
+[>1,2,3] = {!!}
 
 -- (1 MARK)
 -- Give the list [>4,5,6]
 [>4,5,6] : List> ℕ
-[>4,5,6] = 4 ,- 5 ,- 6 ,- []
+[>4,5,6] = {!!}
 
 variable
   xs ys zs : List> A
---
----- We will be using the same name for the same operations over forwards
----- and backwards so we need to put them in a module. This mean all of
----- the List>-related definition should be indented to be in this inner
+
+-- We will be using the same name for the same operations over forwards
+-- and backwards so we need to put them in a module. This mean all of
+-- the List>-related definition should be indented to be in this inner
 -- module.
 module List>P where
 
@@ -324,21 +270,13 @@ module List>P where
   -- Implement `replicate` the function that takes a natural number and
   -- a value and returns a list containing `n` copies of the value.
   replicate : ℕ → A → List> A
-  replicate zero x₁ = []
-  replicate (suc x) x1 = x1 ,- (replicate x x1)
+  replicate = {!!}
 
   -- (1 MARK)
   -- Implement the length operation, it counts the number of elements
   -- in the list
   length : List> A → ℕ
-  length [] = zero
-  length (x ,- x1) = suc (length x1)
-
-
-  tail : List> A -> List> A
-  tail [] = []
-  tail (x ,- t) = t
-
+  length = {!!}
 
   -- (1 MARK)
   infixr 6 _++_
@@ -346,90 +284,41 @@ module List>P where
   -- manner e.g. [>1,2,3] ++ [>4,5,6] computes to [>1,2,3,4,5,6].
   -- Feel free to add unit tests
   _++_ : List> A → List> A → List> A
-  [] ++ x2 = x2
-  (x ,- x1) ++ x2 = x ,- (x1 ++ x2)
+  xs ++ ys = {!!}
 
--- 3 2 1 h ,  6 5 4 h 
-
-  concattest : List> ℕ
-  concattest = ([>1,2,3] ++ [>4,5,6])
-
-  
   -- (1 MARK)
   -- Implement `map` which, given a function from `A` to `B` and a `List> A`,
   -- applies the function to every element in the list thus creating a `List> B`.
   map : (A → B) → List> A → List> B
-  map f [] = []
-  map f (head ,- tail) = f head ,- (map f tail)
+  map = {!!}
 
   -- Proofs
+
   -- (1 MARK)
   -- Prove that the `length` of the list obtained by calling `replicate`
   -- is the size given as an input.
   length-replicate : (n : ℕ) (x : A) → length (replicate n x) ≡ n
-  length-replicate zero x = refl
-  length-replicate (suc n) x = cong suc (length-replicate n x)
+  length-replicate = {!!}
 
--- given: length (replicate n x) ≡ n       
--- need: length(replicate (suc n) x = suc n
--- how did it deduce that
--- length(replicate(suc n) x) == suc (length(replicate n x)) 
-
--- (replicate suc n x) = h : (replicate n x)
--- length h : (replicate n x) = suc (length(replicate n x))
-
-  right+zero : ∀ m → m ≡ m + zero
-  right+zero zero = refl
-  right+zero (suc m) = cong suc (right+zero m)
-
-  simplify : (xs : List> A) → length (xs ++ []) ≡ length xs + zero
-  simplify [] = refl
-  simplify (x ,- xs) = cong suc (simplify xs)
-
-  prove : ∀ m n → suc (m + n) ≡ m + suc n
-  prove m n = symmetric (+-suc m n)
-       
   -- (1 MARK)
   -- Prove that length distributes over append
   length-++ : (xs ys : List> A) → length (xs ++ ys) ≡ length xs + length ys
-  length-++ [] ys = refl
-  length-++ (x ,- xs) ys = cong suc (length-++ xs ys)
-
- -- length-++ xs (x ,- ys) = {!transitive (meqn->smeqsn (length-++ xs ys)) (prove (length xs) (length ys))!}
-  
-  -- have: length (xs ++ []) = length xs + length []
-  -- need: equality
-
-  -- have: length (xs ++ ys) ≡ length xs + length ys
-  -- have: suc (length (xs ++ ys) = suc (length xs + length ys)
-  -- have: trans -> suc (length (xs ++ ys) = suc (length xs + length ys) ->
-  
-  -- need: suc (length (xs ++ y,-ys))) ≡ (length xs + length y,-ys) 
+  length-++ = {!!}
 
   -- (1 MARK)
   -- Prove that append is associative
   ++-assoc : (xs ys zs : List> A) → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
-  ++-assoc [] ys zs = refl
-  ++-assoc (x ,- xs) ys zs = cong (λ n → x ,- n) (++-assoc xs ys zs)
+  ++-assoc = {!!}
 
   -- (2 MARKS)
   -- State and prove another property. I can think of various ones e.g.
   -- length-map, replicate-+, map-++, map-map whose names are hopefully
   -- suggestive enough.
 
-  -- replicate distribution over concatenation
-  replicate-+ : (m n : ℕ) (a : A) → replicate(m + n) a ≡ (replicate m a) ++ (replicate n a)
-  replicate-+ zero n a = refl
-  replicate-+ (suc m) n a = cong (\ n → a ,- n) (replicate-+ m n a)
 
--- have: replicate(m + n) a ≡ (replicate m a) ++ (replicate n a)
--- have: a ,- relicate (m + n) a = a ,- replicate m a ++ replicate n a 
 
--- goal: replicate (suc m + n) a ≡ replicate (suc m) a ++ replicate n a
--- goal: replicate (suc(m+n)) a = a ,- replicate m a ++ replicate n a
--- goal: a ,- relicate (m + n) a = a ,- replicate m a ++ replicate n a
 
---------------------------------------------------------------------------
+------------------------------------------------------------------------
 -- Backwards lists (13 MARKS)
 
 -- A backwards list is held from its right and processed righ-to-left
@@ -443,12 +332,12 @@ data List< (A : Set) : Set where
 -- (1 MARK)
 -- Give the list [<1,2,3]
 [<1,2,3] : List< ℕ
-[<1,2,3] = [] -, 1 -, 2 -, 3
+[<1,2,3] = {!!}
 
 -- (1 MARK)
 -- Give the list [<4,5,6]
 [<4,5,6] : List< ℕ
-[<4,5,6] = [] -, 4 -, 5 -, 6
+[<4,5,6] = {!!}
 
 variable
   sx sy sz : List< A
@@ -461,80 +350,42 @@ module List<P where
 
   -- (1 MARK)
   -- Creating a backwards list
-  replicate : ℕ → A → (List< A)
-  replicate zero x = []
-  replicate (suc x) elem = (replicate x elem) -, elem
+  replicate : {!!}
+  replicate = {!!}
 
   -- (1 MARK)
   -- The length of a list is its number of elements
-  length : List< A → ℕ
-  length [] = zero
-  length (tail -, head) = suc (length tail)
+  length : {!!}
+  length = {!!}
 
   -- (1 MARK)
   -- Combining two backwards lists
-  _++_ : List< A → List< A → List< A
-  x ++ [] = x
-  x ++ (y -, h) = (x ++ y) -, h
-
-  -- [empty>1,2,3] ++ [empty>4,5,6] = [empty>1,2,3,4,5,6]
-  
-  concatTest : List< ℕ
-  concatTest = ([<1,2,3] ++ [<4,5,6])
+  _++_ : {!!}
+  _++_ = {!!}
 
   -- (1 MARK)
   -- Modifying a backwards list
-  map :(A → B) → List< A → List< B
-  map f [] = []
-  map f (list -, x) = (map f list) -, (f x)
+  map : {!!}
+  map = {!!}
 
   -- Proofs
 
   -- (1 MARK)
-  length-replicate : (n : ℕ) (x : A) → length (replicate n x) ≡ n
-  length-replicate zero x = refl
-  length-replicate (suc n) x = cong suc (length-replicate n x)
-
-  simplify : (xs : List< A) → length (xs ++ []) ≡ length xs + zero
-  simplify [] = refl
-  simplify (xs -, x) = cong suc (simplify xs) 
+  length-replicate : {!!}
+  length-replicate = {!!}
 
   -- (3 MARKS)
-  length-++ : (xs ys : List< A) → length (xs ++ ys) ≡ length xs + length ys
-  length-++ xs [] = simplify xs
-  length-++ xs (ys -, x) = transitive (cong suc (length-++ xs ys)) (symmetric (+-suc (length xs) (length ys)))
-
--- have: length (xs ++ ys) ≡ length xs + length ys
--- have: suc(length (xs ++ ys) = suc (length xs + length ys)
--- have: suc(length (xs ++ ys) = length xs + suc(length ys)
-
--- need: length (xs ++ ys-,y) ≡ length xs + (length ys-,y)
--- need: length (xs ++ ys -, y) = length xs + suc (length ys)
--- need: suc (length xs ++ ys) = length xs + suc (length ys) 
+  length-++ : {!!}
+  length-++ = {!!}
 
   -- (1 MARK)
-  ++-assoc : (xs ys zs : List< A) → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
-  ++-assoc xs ys [] = refl
-  ++-assoc xs ys (zs -, x) = cong (\ n -> n -, x) (++-assoc xs ys zs)
+  ++-assoc : {!!}
+  ++-assoc = {!!}
 
   -- (2 MARKS)
   -- State and prove a (different!) property of your own once again.
 
-  _∘_ : (f : B → C) (g : A → B) → (A → C)
-  (f ∘ g) x = f (g x)
-
-  map-compose : ∀ {A B C : Set} (f : B → C) (g : A → B) (xs : List< A) → map (f ∘ g) xs ≡ map f (map g xs)
-  map-compose f g [] = refl
-  map-compose f g (xs -, x) = cong (\ n → n -, (f (g x))) (map-compose f g xs)
-
-  -- have: map (f ∘ g) xs ≡ map f (map g xs)
-  -- have: map (f ∘ g) xs -, f (g x) = map f (map g xs) -, f (g x))
-
-  -- need: map (f ∘ g) (xs -, x) ≡ map f (map g (xs -, x))
-  -- need: map (f ∘ g) xs -, f (g x) = map f (map g xs) -, (g x)
-  -- need: map (f ∘ g) xs -, f (g x) = map f (map g xs) -, f (g x))
-
---------------------------------------------------------------------------
+------------------------------------------------------------------------
 -- Combining different kinds of lists (2 MARKS)
 
 -- There are two ways to combine [<1,2,3] and [>4,5,6] in a way that
@@ -550,41 +401,32 @@ infixl 5 _<><_
 -- (1 MARK)
 -- Implement fish
 _<><_ : List< A → List> A → List< A
-x <>< [] = x
-x <>< (h ,- tail) =  (x -, h) <>< tail
+_<><_ = {!!}
 
 -- Unit test
-combinationtest1 : List< ℕ
-combinationtest1 = [<1,2,3] <>< [>4,5,6]
 _ : [<1,2,3] <>< [>4,5,6] ≡ [] -, 1 -, 2 -, 3 -, 4 -, 5 -, 6
-_ = refl
+_ = {!!}
+
 
 -- Mnemonic: _<>>_ takes a backwards (<) and a forwards (>) list and
 -- returns a forwards one (>)
 
 infixr 5 _<>>_
 
-convertList : List< A -> List> A
-convertList [] = []
-convertList (tail -, h) = (List>P._++_ (convertList tail) (h ,- []))
-
 -- (1 MARK)
 -- Implement chips
 _<>>_ : List< A → List> A → List> A
-[] <>> y = y
-(tail -, x) <>> y = tail <>> (x ,- y)  
+_<>>_ = {!!}
 
 -- Unit test
-combinationtest2 : List> ℕ
-combinationtest2 = [<1,2,3] <>> [>4,5,6]
 _ : [<1,2,3] <>> [>4,5,6] ≡ 1 ,- 2 ,- 3 ,- 4 ,- 5 ,- 6 ,- []
-_ = refl
+_ = {!!}
 
 
 
---------------------------------------------------------------------------
----- Getting ready: Quantifiers, Focus
---------------------------------------------------------------------------
+------------------------------------------------------------------------
+-- Getting ready: Quantifiers, Focus
+------------------------------------------------------------------------
 
 variable
   P Q : A → Set
@@ -612,22 +454,20 @@ module All>P where
   -- A (safe!) head function extracting a proof that `P x` holds when
   -- we know that `P` holds of all of the elements in `x ,- xs`
   head : All> P (x ,- xs) → P x
-  head (x ,- x₁) = x
-
+  head = {!!}
 
   -- (1 MARK)
   -- A (safe!) tail function building a proof that `P` holds of all
   -- the elements in `xs` when we already know that it holds of all
   -- of the elements in `x ,- xs`
   tail : All> P (x ,- xs) → All> P xs
-  tail (x ,- tail) = tail
+  tail = {!!}
 
   -- (1 MARK)
   -- If the P implies Q and P holds of all the elements in xs then
   -- Q also does!
   map : (∀ {x} → P x → Q x) → All> P xs → All> Q xs
-  map x [] = []
-  map x (h ,- tail) = x h ,- (map x tail)
+  map = {!!}
 
 -- A `List> A` can be seen as giving an element of type `A` for every
 -- element in `xs`. Conversely, if we have an element of a type `B` for
@@ -638,29 +478,26 @@ module All>P where
 -- (2 MARKS)
 -- Implement `fromList>`
 fromList> : (xs : List> A) → All> (λ _ → A) xs
-fromList> [] = []
-fromList> (x ,- xs) = x ,- fromList> xs
+fromList> = {!!}
 
 -- (2 MARKS)
 -- Implement `toList>`
 toList> : All> (λ _ → B) xs → List> B
-toList> [] = []
-toList> (x ,- tail) = x ,- toList> tail 
+toList> = {!!}
 
 -- (1 MARK)
 -- Prove that `toList>` and `map` commute!
 toList>-map : (f : A → B) (xs : All> (λ _ → A) xs) →
               toList> (All>P.map f xs) ≡ List>P.map f (toList> xs)
-toList>-map f [] = refl
-toList>-map f (x ,- xs) = cong (\ n -> f x ,- n) (toList>-map f xs)
+toList>-map f xs = {!!}
 
 -- (1 MARK)
 -- Prove that `toList>` is a left inverse to `fromList>`
 from-to-List> : (xs : List> A) → toList> (fromList> xs) ≡ xs
-from-to-List> [] = refl
-from-to-List> (x ,- xs) = cong (\ n -> x ,- n) (from-to-List> xs)
+from-to-List> = {!!}
 
---------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 -- Membership as a context-revealing view (15 MARKS)
 
 -- The following definition is a membership predicate: it states that
@@ -681,28 +518,22 @@ data _∈_ {A : Set} :  A → List> A → Set where
 -- are not equal. Keep it as simple as possible!
 proof-relevant :
   let x : ℕ
-      x = 2
+      x = {!!}
       xs : List> ℕ
-      xs = 1 ,- 2 ,- 3 ,- 2 ,- []
+      xs = {!!}
       p : x ∈ xs
-      p = ([] -, 1) [ x ] (3 ,- 2 ,- [])
+      p = {!!}
       q : x ∈ xs
-      q = ([] -, 1 -, 2 -, 3) [ 2 ] ([])
+      q = {!!}
   in p ≢ q
-proof-relevant ()
-
-
-reduce : (sx : List< A) (xs : List> A) -> All> P (sx <>> xs) -> All> P xs 
-reduce [] xs x = x
-reduce (tail -, head) xs x = All>P.tail (reduce tail (head ,- xs) x)
+proof-relevant = {!!}
 
 -- HARD (4 MARKS):
 -- Prove that if `x` belongs to ‵xs` and `P` holds of all the elements
 -- in `xs` then `P x` also holds. This will require coming up with the type
 -- of a tricky auxiliary lemma!
 lookup : x ∈ xs → All> P xs → P x
-lookup ([] [ y ] xs) quantifier = All>P.head quantifier
-lookup (sx [ y ] xs) quantifier = All>P.head (reduce sx (y ,- xs) quantifier)
+lookup = {!!}
 
 
 -- Interlude: We can say that a list `xs` is focused if we have a `focus`
@@ -719,103 +550,81 @@ record Focused (xs : List> A) : Set where
 -- Write the function that slides the focus one step to the left if possible
 -- and behaves like the identity otherwise.
 leftwards : Focused xs → Focused xs
-leftwards (! [] [ _ ] xs) = ! [] [ _ ] xs
-leftwards (! sx -, x [ _ ] xs) = ! sx [ x ] _ ,- xs
+leftwards = {!!}
 
 -- (1 MARK)
 -- Same but for sliding one step to the right.
 rightwards : Focused xs → Focused xs
-rightwards (! sx [ y ] []) = ! sx [ y ] []
-rightwards (! sx [ y ] (x ,- xs)) = ! (sx -, y [ x ] xs)
-
+rightwards = {!!}
 
 -- (2 MARKS)
 -- Prove that it is *not* the case that leftwards and rightwards are inverses
 -- Keep it as simple as possible!
 counter-example :
   let xs : List> ℕ
-      xs = 1 ,- 2 ,- 3 ,- []
+      xs = {!!}
       f : Focused xs
-      f = ! (([] -, 1 -, 2) [ 3 ] [])
+      f = {!!}
   in leftwards (rightwards f) ≢ f
-counter-example = λ ()
---
----- (1 MARK)
----- Write the function that takes a list of boolean corresponding to left/right
----- instructions (true ↦ left; false ↦ right) and repeatedly moves the focus
----- according to it
+counter-example = {!!}
+
+-- (1 MARK)
+-- Write the function that takes a list of boolean corresponding to left/right
+-- instructions (true ↦ left; false ↦ right) and repeatedly moves the focus
+-- according to it
 following : List> Bool → Focused {A} xs → Focused xs
-following [] y = y
-following (true ,- list) state = leftwards state
-following (false ,- list) state = rightwards state
---
---{- uncomment the unit test
+following = {!!}
+
+{- uncomment the unit test
 _ : following (true ,- true ,- false ,- []) (! ([<1,2,3] [ 0 ] [>4,5,6]))
   ≡ ! [] -, 1 -, 2 [ 3 ] 0 ,- 4 ,- 5 ,- 6 ,- []
-_ = refl
--- CLOSINGBRACKET
-
+_ = {!!}
+-}
 
 -- HARD (4 MARKS)
 -- Prove that for every element in a list we can create a focus around it.
-
-focusUltimateHelper : (sx : List< A)(xs : List> A)  → All> (_∈ sx <>> xs) xs
-focusUltimateHelper sx [] = []
-focusUltimateHelper sx (x ,- xs) =  (\ x -> (sx [ x ] xs)) x ,- (focusUltimateHelper (sx -, x) xs)
-
 focus : (xs : List> A) → All> (_∈ xs) xs
-focus = focusUltimateHelper [] 
+focus = {!!}
 
---{-
+{-
 -- Unit test for focus
 _ : focus [>1,2,3] ≡ ([] [ 1 ] 2 ,- 3 ,- []) ,- -- 1 in focus
                      ([] -, 1 [ 2 ] 3 ,- []) ,- -- 2 in focus
                      ([] -, 1 -, 2 [ 3 ] []) ,- -- 3 in focus
                      []
-_ = refl
---CLOSINGBRACKET
+_ = {!!}
+-}
 
---------------------------------------------------------------------------
----- And now: a cellular automaton! (10 MARKS)
---------------------------------------------------------------------------
---
----- A rule from `A` to `B` is a function that, given a `List> A` and an
----- element that belongs to it, produces a value of typen `B`.
+------------------------------------------------------------------------
+-- And now: a cellular automaton! (10 MARKS)
+------------------------------------------------------------------------
+
+-- A rule from `A` to `B` is a function that, given a `List> A` and an
+-- element that belongs to it, produces a value of typen `B`.
 Rule : Set → Set → Set
 Rule A B = ∀ {x : A} {xs : List> A} → x ∈ xs → B
---
----- Here is an example of a rule returning the left neighbour
----- of the current focus (if it exists) and the default value
----- otherwise.
 
+-- Here is an example of a rule returning the left neighbour
+-- of the current focus (if it exists) and the default value
+-- otherwise.
 left-neighbour : A → Rule A A
 left-neighbour default (_ -, l [ x ] _) = l -- l is on the left of the focus
 left-neighbour default ([] [ x ] xs) = default -- nothing is on the left: default!
---
 
----- (3 MARKS)
+-- (3 MARKS)
 -- Implement `step`, the function which applies a rule to every element
 -- in an initial `List> A`.
-
---helper .[] x [] = []
---helper (_ ,- _) rule (belongs ,- qualifier) = {!rule belongs ,- (helper (_ ,- _) rule qualifier)!}
-
-construct : (xs ys : List> A) → Rule A B -> All> (_∈ ys) xs -> List> B
-construct .[] ys rule [] = []
-construct (h ,- t) ys rule (x ,- qualifier) =  (rule x) ,- (construct t ys rule qualifier)
-
 step : Rule A B → List> A → List> B
-step x list =  (construct list list x (focus list))
-
+step f xs = {!!}
 
 -- The left neighbour rule with default value 17 deployed over [>1,2,3]
 _ : step (left-neighbour 17) [>1,2,3] ≡ 17 ,- 1 ,- 2 ,- []
-_ = refl
---
----- Rules such as rule 90 (https://en.wikipedia.org/wiki/Rule_90) are more
----- restricted: they operate on a sliding window of size 3 (one element to
----- the left of the focus, the focus, and one element to its right).
----- Such windows can be represented by the following record type.
+_ = {!!}
+
+-- Rules such as rule 90 (https://en.wikipedia.org/wiki/Rule_90) are more
+-- restricted: they operate on a sliding window of size 3 (one element to
+-- the left of the focus, the focus, and one element to its right).
+-- Such windows can be represented by the following record type.
 record Window : Set where
   constructor _,_,_
   field
@@ -827,62 +636,42 @@ record Window : Set where
 -- Write the function turning a membership proof into the appropriate window.
 -- Pad the missing cells with `false`.
 pad : Rule Bool Window
-pad ([] [ focus ] []) = false , focus , false
-pad ([] [ focus ] x ,- xs) = false , focus , x
-pad (sx -, x [ focus ] []) = x , focus , false
-pad (sx -, x [ focus ] y ,- xs) = x , focus , y
+pad = {!!}
 
 -- (1 MARK)
 -- Implement `rule`, the function turning a window-consuming boolean
 -- function into a Rule.
 rule : (Window → Bool) → Rule Bool Bool
-rule table ([] [ focus ] []) = table (false , focus , false)
-rule table ([] [ focus ] x ,- xs) = table (false , focus , x)
-rule table (sx -, x [ focus ] []) = table (x , focus , false)
-rule table (sx -, x [ focus ] y ,- xs) = table (x , focus , y)
+rule table c = {!!}
 
----- Implement (at least) rule 90, 30, and 110.
----- https://en.wikipedia.org/wiki/Rule_90
----- https://en.wikipedia.org/wiki/Rule_30
----- https://en.wikipedia.org/wiki/Rule_110
 
+-- Implement (at least) rule 90, 30, and 110.
+-- https://en.wikipedia.org/wiki/Rule_90
+-- https://en.wikipedia.org/wiki/Rule_30
+-- https://en.wikipedia.org/wiki/Rule_110
 
 -- (1 MARK)
 rule90 : Rule Bool Bool
-rule90 = rule λ x → (Window.left x) xor (Window.right x)
+rule90 = {!!}
 
-
-ruletest : Rule Bool Bool
-ruletest = rule λ x → true
-
----- (1 MARK)
+-- (1 MARK)
 rule30 : Rule Bool Bool
-rule30 = rule (λ x →  Window.left x xor (Window.middle x  ∨ Window.right x))
+rule30 = {!!}
 
-rule110WindowConsumer : Window -> Bool
-rule110WindowConsumer (true , true , true) = false
-rule110WindowConsumer (true , true , false) = true
-rule110WindowConsumer (true , false , true) = true
-rule110WindowConsumer (true , false , false) = false
-rule110WindowConsumer (false , true , true) = true
-rule110WindowConsumer (false , true , false) = true
-rule110WindowConsumer (false , false , true) = true
-rule110WindowConsumer (false , false , false) = false
-
----- (1 MARK)
+-- (1 MARK)
 rule110 : Rule Bool Bool
-rule110 =  (rule rule110WindowConsumer) 
---
----- (1 MARK)
----- Define an initial state with: 90 dead cells, followed by 1 alive cell,
----- followed by anoter 90 dead cells
+rule110 = {!!}
+
+-- (1 MARK)
+-- Define an initial state with: 90 dead cells, followed by 1 alive cell,
+-- followed by anoter 90 dead cells
 0⋯010⋯0 : List> Bool
-0⋯010⋯0 = List>P._++_  (List>P.replicate 90 false) (List>P._++_ (true ,- []) (List>P.replicate 90 false))
---
----- (1 MARK)
----- Define an initial state with: 180 dead cells, followed by 1 alive cell
+0⋯010⋯0 = {!!}
+
+-- (1 MARK)
+-- Define an initial state with: 180 dead cells, followed by 1 alive cell
 0⋯01 : List> Bool
-0⋯01 = List>P._++_ (List>P.replicate 180 false) (true ,- [])
+0⋯01 = {!!}
 
 
 ------------------------------------------------------------------------
@@ -901,7 +690,6 @@ postulate
 {-# FOREIGN GHC import qualified Data.Text as T #-}
 {-# COMPILE GHC List> = data [] ([] | (:)) #-}
 {-# COMPILE GHC toString = T.pack #-}
-
 
 display : List> Bool → String
 display bs = toString (List>P.map (if_then '█' else ' ') bs)
@@ -938,12 +726,9 @@ postulate
 ------------------------------------------------------------------------
 -- The function entrypoint
 
-
 {-# NON_TERMINATING #-}
 main : IO ⊤
-main = do
-  loop (0⋯010⋯0)
-
+main = loop 0⋯010⋯0 -- you can modify the initial state here
 
   where
 
@@ -951,7 +736,7 @@ main = do
   loop bs = do
     putStrLn (display bs)
     wait 30000
-    loop (step rule110 bs) -- you can modify the rule being used here
+    loop (step rule90 bs) -- you can modify the rule being used here
 
 
 -- To run the project simply run `make cellular` in the `courseworks`
@@ -969,5 +754,3 @@ main = do
 -- * loop detection (if a state repeats itself, stop the program)
 -- * treat the state of the cellular automaton as circular: the last cell
 --   is considered to the left of the first one, and vice-versa.
-
-{-{--}-}
