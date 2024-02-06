@@ -833,10 +833,7 @@ pad (sx -, x [ focus ] y ,- xs) = x , focus , y
 -- Implement `rule`, the function turning a window-consuming boolean
 -- function into a Rule.
 rule : (Window → Bool) → Rule Bool Bool
-rule table ([] [ focus ] []) = table (false , focus , false)
-rule table ([] [ focus ] x ,- xs) = table (false , focus , x)
-rule table (sx -, x [ focus ] []) = table (x , focus , false)
-rule table (sx -, x [ focus ] y ,- xs) = table (x , focus , y)
+rule table rule = table (pad rule)
 
 ---- Implement (at least) rule 90, 30, and 110.
 ---- https://en.wikipedia.org/wiki/Rule_90
