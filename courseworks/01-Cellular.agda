@@ -889,12 +889,15 @@ postulate
   Char : Set
   String : Set
   toString : List> Char → String
+  StringToList : String -> List> Char
 
 {-# BUILTIN CHAR Char #-}
 {-# BUILTIN STRING String #-}
 {-# FOREIGN GHC import qualified Data.Text as T #-}
 {-# COMPILE GHC List> = data [] ([] | (:)) #-}
 {-# COMPILE GHC toString = T.pack #-}
+{-# COMPILE GHC StringToList = T.unpack #-}
+
 
 
 display : List> Bool → String
@@ -910,6 +913,7 @@ postulate
   pure : A → IO A
   _>>=_ : IO A → (A → IO B) → IO B
   putStrLn : String → IO ⊤
+  getLine : IO String
 
 _>>_ : IO A → IO B → IO B
 ma >> mb = ma >>= λ _ → mb
@@ -917,6 +921,7 @@ ma >> mb = ma >>= λ _ → mb
 {-# BUILTIN IO IO #-}
 {-# FOREIGN GHC import qualified Data.Text.IO as T #-}
 {-# COMPILE GHC IO = type IO #-}
+{-# COMPILE GHC getLine = T.getLine #-}
 {-# COMPILE GHC pure = \ _ -> pure #-}
 {-# COMPILE GHC _>>=_ = \ _ _ -> (>>=) #-}
 {-# COMPILE GHC putStrLn = T.putStrLn #-}
@@ -932,23 +937,82 @@ postulate
 ------------------------------------------------------------------------
 -- The function entrypoint
 
+open import Agda.Builtin.Maybe public
+  using (Maybe; just; nothing)
+
+
+record BoolList : Set where
+  constructor _,_,_,_,_,_,_,_
+  field
+    one : Bool
+    two : Bool
+    three : Bool
+    four : Bool
+    five : Bool
+    six : Bool
+    seven : Bool
+    eight : Bool
+
+getMaybeBoolList : Maybe (List> Bool) -> Maybe BoolList
+getMaybeBoolList (just (x ,- x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- [])) = just (x , x1 , x2 , x3 , x4 , x5 , x6 , x7)
+getMaybeBoolList (just x) = nothing
+getMaybeBoolList nothing = nothing
+
+charToBool : Char -> Bool
+charToBool '1' = true
+charToBool x = false
+
+checkIfOnlyOnesAndZeroes : List> Char -> Bool
+checkIfOnlyOnesAndZeroes [] = true
+checkIfOnlyOnesAndZeroes ('0' ,- tail) = true ∧ checkIfOnlyOnesAndZeroes tail
+checkIfOnlyOnesAndZeroes ('1' ,- tail) = true ∧ checkIfOnlyOnesAndZeroes tail
+checkIfOnlyOnesAndZeroes (x ,- tail) = false
+
+listCharToMaybeBoolList : List> Char -> Maybe (List> Bool)
+listCharToMaybeBoolList (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- []) = if (checkIfOnlyOnesAndZeroes (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- [])) then (just (List>P.map charToBool (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- []))) else nothing 
+listCharToMaybeBoolList list = nothing
+
+
+listToMaybeBoolList : List> Char -> Maybe BoolList
+listToMaybeBoolList x = getMaybeBoolList (listCharToMaybeBoolList x)
+
+customRuleBuilder : BoolList -> (Window -> Bool)
+customRuleBuilder (list) (true , true , true) = BoolList.one list
+customRuleBuilder (list) (true , true , false) = BoolList.two list
+customRuleBuilder (list) (true , false , true) = BoolList.three list
+customRuleBuilder (list) (true , false , false) = BoolList.four list 
+customRuleBuilder (list) (false , true , true) = BoolList.five list
+customRuleBuilder (list) (false , true , false) = BoolList.six list
+customRuleBuilder (list) (false , false , true) = BoolList.seven list
+customRuleBuilder (list) (false , false , false) = BoolList.eight list
+
+BoolListToRule : BoolList -> Rule Bool Bool
+BoolListToRule x = rule (customRuleBuilder x)
+
 
 {-# NON_TERMINATING #-}
 main : IO ⊤
 main = do
   putStrLn "Enter a binary rule (8 bits): "
-  putStrLn "Enter a binary rule (8 bits): "
-  loop (0⋯010⋯0)
-
---main = loop (0⋯010⋯0) -- you can modify the initial state here
+  input <- getLine
+  check (0⋯010⋯0) (listToMaybeBoolList (StringToList input))
 
   where
+  check : List> Bool → Maybe BoolList -> IO _
+  check bs (just x) = do
+    loop bs (BoolListToRule x)
+    
+    where
+    loop : List> Bool -> Rule Bool Bool ->  IO _
+    loop bs inputRule = do
+       putStrLn (display bs)
+       wait 30000
+       loop (step inputRule bs) inputRule
 
-  loop : List> Bool → IO _
-  loop bs = do
-    putStrLn (display bs)
-    wait 30000
-    loop (step rule110 bs) -- you can modify the rule being used here
+  check bs nothing = do
+    putStrLn "Input validation failed, enter the rule Volfram code again. "
+    main
+
 
 
 -- To run the project simply run `make cellular` in the `courseworks`
