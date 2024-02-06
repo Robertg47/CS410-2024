@@ -1,3 +1,12 @@
+{-# OPTIONS --guardedness #-}
+
+open import Data.String.Base using (String)
+open import Data.Char.Base
+open import IO.Base 
+open import IO.Finite using (getLine)
+open import IO.Effectful
+open import IO.Instances
+
 ------------------------------------------------------------------------
 -- Coursework 1: Cellular (100 marks, 40% of course total)
 --
@@ -186,10 +195,8 @@ not-or false c = refl
 -- Natural numbers (13 MARKS)
 
 -- The inductive type of natural numbers
-data ℕ : Set where
-  zero : ℕ
-  suc : ℕ → ℕ
-{-# BUILTIN NATURAL ℕ #-}
+
+open import Data.Nat.Base using (ℕ ; zero ; suc)
 
 variable m n : ℕ
 
@@ -886,12 +893,8 @@ rule110 =  (rule rule110WindowConsumer)
 -- We need a bit of magic to actually get something out on the console
 
 postulate
-  Char : Set
-  String : Set
   toString : List> Char → String
 
-{-# BUILTIN CHAR Char #-}
-{-# BUILTIN STRING String #-}
 {-# FOREIGN GHC import qualified Data.Text as T #-}
 {-# COMPILE GHC List> = data [] ([] | (:)) #-}
 {-# COMPILE GHC toString = T.pack #-}
@@ -905,24 +908,11 @@ record ⊤ : Set where
 
 {-# COMPILE GHC ⊤ = data () (()) #-}
 
-postulate
-  IO : Set → Set
-  pure : A → IO A
-  _>>=_ : IO A → (A → IO B) → IO B
-  putStrLn : String → IO ⊤
 
-_>>_ : IO A → IO B → IO B
-ma >> mb = ma >>= λ _ → mb
-
-{-# BUILTIN IO IO #-}
 {-# FOREIGN GHC import qualified Data.Text.IO as T #-}
-{-# COMPILE GHC IO = type IO #-}
-{-# COMPILE GHC pure = \ _ -> pure #-}
-{-# COMPILE GHC _>>=_ = \ _ _ -> (>>=) #-}
-{-# COMPILE GHC putStrLn = T.putStrLn #-}
 
 postulate
-  wait : ℕ → IO ⊤
+  wait : ℕ → IO.Base.IO ⊤
 
 {-# FOREIGN GHC import Control.Concurrent (threadDelay) #-}
 {-# COMPILE GHC wait = threadDelay . fromIntegral #-}
@@ -934,19 +924,19 @@ postulate
 
 
 {-# NON_TERMINATING #-}
-main : IO ⊤
+main : IO.Base.IO ⊤
 main = do
-  putStrLn "Enter a binary rule (8 bits): "
-  putStrLn "Enter a binary rule (8 bits): "
+  IO.Finite.putStrLn "Enter a binary rule (8 bits): "
+  input <- getLine
   loop (0⋯010⋯0)
 
 --main = loop (0⋯010⋯0) -- you can modify the initial state here
 
   where
 
-  loop : List> Bool → IO _
+  loop : List> Bool → IO.Base.IO _
   loop bs = do
-    putStrLn (display bs)
+    IO.Finite.putStrLn (display bs)
     wait 30000
     loop (step rule110 bs) -- you can modify the rule being used here
 
