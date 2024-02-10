@@ -1,3 +1,6 @@
+--{-# OPTIONS --cubical-compatible --sized-types #-}
+
+
 ------------------------------------------------------------------------
 -- Coursework 1: Cellular (100 marks, 40% of course total)
 --
@@ -45,7 +48,7 @@
 -- Quantifiers           9   MARKS   -- 9  - 60
 -- Membership            15  MARKS   -- 15  - 75
 -- Cellular automaton    10  MARKS   -- 10   - 85
--- Extension             15  MARKS
+-- Extension             15  MARKS   -- input validation, custom rules, 
 --
 -- TOTAL                 100 MARKS
 
@@ -915,6 +918,7 @@ postulate
   putStrLn : String → IO ⊤
   getLine : IO String
 
+
 _>>_ : IO A → IO B → IO B
 ma >> mb = ma >>= λ _ → mb
 
@@ -937,6 +941,58 @@ postulate
 ------------------------------------------------------------------------
 -- The function entrypoint
 
+
+-- Tree for a loop detection
+data Tree (A : Set) : Set where
+  leaf : A -> Tree A
+  _<>_ : Tree A -> Tree A -> Tree A
+
+insert : List> Bool -> Tree Bool -> Tree Bool
+insert [] (leaf x) = leaf true
+insert (true ,- list) (leaf x) = (insert list (leaf false)) <> leaf false
+insert (false ,- list) (leaf x) = leaf false <> insert list (leaf false)
+insert [] (tree <> tree₁) = (tree <> tree₁)  -- impossible case considering calls have fixed length
+insert (true ,- list) (left <> right) = insert list left <> right
+insert (false ,- list) (left <> right) = left <> insert list right
+
+
+contains : List> Bool -> Tree Bool -> Bool
+contains [] (leaf x) = x
+contains (x₁ ,- list) (leaf x) = false
+contains [] (tree <> tree₁) = false
+contains (true ,- list) (left <> right) =  contains list left 
+contains (false ,- list) (left <> right) = contains list right
+
+
+-- Unit tests
+leafTree : Tree Bool
+leafTree = leaf false 
+
+test10 : insert (true ,- false ,- []) leafTree ≡ ((leaf false) <> (leaf true)) <> leaf false
+test10 = refl
+
+test11 : contains (true ,- false ,- []) (insert (true ,- false ,- []) leafTree) ≡ true
+test11 = refl
+
+test12 : contains (true ,- true ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
+test12 = refl
+
+test13 : contains (false ,- true ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
+test13 = refl
+
+test14 : contains (false ,- false ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
+test14 = refl
+
+test15 : contains (true ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
+test15 = refl
+
+test16 : contains (false ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
+test16 = refl
+
+test17 : contains 0⋯010⋯0 (leaf false) ≡ false
+test17 = refl
+ 
+
 open import Agda.Builtin.Maybe public
   using (Maybe; just; nothing)
 
@@ -953,28 +1009,30 @@ record BoolList : Set where
     seven : Bool
     eight : Bool
 
-getMaybeBoolList : Maybe (List> Bool) -> Maybe BoolList
-getMaybeBoolList (just (x ,- x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- [])) = just (x , x1 , x2 , x3 , x4 , x5 , x6 , x7)
-getMaybeBoolList (just x) = nothing
-getMaybeBoolList nothing = nothing
 
 charToBool : Char -> Bool
 charToBool '1' = true
 charToBool x = false
 
+-- Input validation
 checkIfOnlyOnesAndZeroes : List> Char -> Bool
 checkIfOnlyOnesAndZeroes [] = true
 checkIfOnlyOnesAndZeroes ('0' ,- tail) = true ∧ checkIfOnlyOnesAndZeroes tail
 checkIfOnlyOnesAndZeroes ('1' ,- tail) = true ∧ checkIfOnlyOnesAndZeroes tail
 checkIfOnlyOnesAndZeroes (x ,- tail) = false
 
-listCharToMaybeBoolList : List> Char -> Maybe (List> Bool)
-listCharToMaybeBoolList (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- []) = if (checkIfOnlyOnesAndZeroes (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- [])) then (just (List>P.map charToBool (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- []))) else nothing 
-listCharToMaybeBoolList list = nothing
+validateChars : List> Char -> Maybe (List> Bool)
+validateChars (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- []) = if (checkIfOnlyOnesAndZeroes (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- [])) then (just (List>P.map charToBool (x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- x8 ,- []))) else nothing 
+validateChars list = nothing
 
+getMaybeBoolList : Maybe (List> Bool) -> Maybe BoolList
+getMaybeBoolList (just (x ,- x1 ,- x2 ,- x3 ,- x4 ,- x5 ,- x6 ,- x7 ,- [])) = just (x , x1 , x2 , x3 , x4 , x5 , x6 , x7)
+getMaybeBoolList (just x) = nothing
+getMaybeBoolList nothing = nothing
 
+-- Combining functions for simplicity of use
 listToMaybeBoolList : List> Char -> Maybe BoolList
-listToMaybeBoolList x = getMaybeBoolList (listCharToMaybeBoolList x)
+listToMaybeBoolList x = getMaybeBoolList (validateChars x)
 
 customRuleBuilder : BoolList -> (Window -> Bool)
 customRuleBuilder (list) (true , true , true) = BoolList.one list
@@ -986,6 +1044,7 @@ customRuleBuilder (list) (false , true , false) = BoolList.six list
 customRuleBuilder (list) (false , false , true) = BoolList.seven list
 customRuleBuilder (list) (false , false , false) = BoolList.eight list
 
+-- Custom data structure to a rule 
 BoolListToRule : BoolList -> Rule Bool Bool
 BoolListToRule x = rule (customRuleBuilder x)
 
@@ -1000,19 +1059,18 @@ main = do
   where
   check : List> Bool → Maybe BoolList -> IO _
   check bs (just x) = do
-    loop bs (BoolListToRule x)
+    loop bs (BoolListToRule x) (leaf false)
     
     where
-    loop : List> Bool -> Rule Bool Bool ->  IO _
-    loop bs inputRule = do
+    loop : List> Bool -> Rule Bool Bool -> Tree Bool ->  IO _
+    loop bs inputRule tree = do
        putStrLn (display bs)
        wait 30000
-       loop (step inputRule bs) inputRule
+       if (contains bs tree) then putStrLn "Cycle detected, terminating the program." else loop (step inputRule bs) inputRule (insert bs tree)
 
   check bs nothing = do
     putStrLn "Input validation failed, enter the rule Volfram code again. "
     main
-
 
 
 -- To run the project simply run `make cellular` in the `courseworks`
