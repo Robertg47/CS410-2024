@@ -48,7 +48,7 @@
 -- Quantifiers           9   MARKS   -- 9  - 60
 -- Membership            15  MARKS   -- 15  - 75
 -- Cellular automaton    10  MARKS   -- 10   - 85
--- Extension             15  MARKS   -- input validation, custom rules, 
+-- Extension             15  MARKS   -- input validation, custom rules, cycle detection
 --
 -- TOTAL                 100 MARKS
 
@@ -966,29 +966,21 @@ contains (false ,- list) (left <> right) = contains list right
 
 -- Unit tests
 leafTree : Tree Bool
-leafTree = leaf false 
-
+leafTree = leaf false
 test10 : insert (true ,- false ,- []) leafTree ≡ ((leaf false) <> (leaf true)) <> leaf false
 test10 = refl
-
 test11 : contains (true ,- false ,- []) (insert (true ,- false ,- []) leafTree) ≡ true
 test11 = refl
-
 test12 : contains (true ,- true ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
 test12 = refl
-
 test13 : contains (false ,- true ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
 test13 = refl
-
 test14 : contains (false ,- false ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
 test14 = refl
-
 test15 : contains (true ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
 test15 = refl
-
 test16 : contains (false ,- []) (insert (true ,- false ,- []) leafTree) ≡ false
 test16 = refl
-
 test17 : contains 0⋯010⋯0 (leaf false) ≡ false
 test17 = refl
  
@@ -1048,13 +1040,55 @@ customRuleBuilder (list) (false , false , false) = BoolList.eight list
 BoolListToRule : BoolList -> Rule Bool Bool
 BoolListToRule x = rule (customRuleBuilder x)
 
+-- Circular state
+lastElement : List> A -> Maybe A
+lastElement [] = nothing
+lastElement (x ,- []) = just x
+lastElement (x ,- tail) = lastElement tail
+
+addToFront : Maybe A -> List> A -> List> A
+addToFront (just x) list = x ,- list
+addToFront nothing list = list
+
+firstElement : List> A -> Maybe A
+firstElement [] = nothing
+firstElement (x ,- x₁) = just x
+
+addToEnd : Maybe A -> List> A -> List> A
+addToEnd (just x) [] = x ,- []
+addToEnd (just x) (h ,- list) = h ,- addToEnd (just x) list
+addToEnd nothing list = list
+
+removeFirst : List> A -> List> A
+removeFirst [] = []
+removeFirst (x ,- tail) = tail
+
+removeLast : List> A -> List> A
+removeLast [] = []
+removeLast (x ,- []) = []
+removeLast (x ,- tail) = x ,- removeLast tail
+
+
+-- Combining functions
+firstToEndAndLastToFront : List> A -> List> A
+firstToEndAndLastToFront list = addToFront (lastElement list) (addToEnd (firstElement list) list)
+
+removeFirstAndLast : List> A -> List> A
+removeFirstAndLast list = removeLast (removeFirst list)
+
+
+test20 : firstToEndAndLastToFront ( 1 ,- 2 ,- 3 ,- [] ) ≡ ( 3 ,- 1 ,- 2 ,- 3 ,- 1 ,- [] )
+test20 = refl
+test21 : removeFirstAndLast (firstToEndAndLastToFront  ( 1 ,- 2 ,- 3 ,- [] ) ) ≡   ( 1 ,- 2 ,- 3 ,- [] )
+test21 = refl
+
 
 {-# NON_TERMINATING #-}
 main : IO ⊤
 main = do
   putStrLn "Enter a binary rule (8 bits): "
   input <- getLine
-  check (0⋯010⋯0) (listToMaybeBoolList (StringToList input))
+  check (0⋯01) (listToMaybeBoolList (StringToList input))
 
   where
   check : List> Bool → Maybe BoolList -> IO _
@@ -1066,7 +1100,7 @@ main = do
     loop bs inputRule tree = do
        putStrLn (display bs)
        wait 30000
-       if (contains bs tree) then putStrLn "Cycle detected, terminating the program." else loop (step inputRule bs) inputRule (insert bs tree)
+       if (contains bs tree) then putStrLn "Cycle detected, terminating the program." else loop (removeFirstAndLast (step inputRule (firstToEndAndLastToFront bs))) inputRule (insert bs tree)
 
   check bs nothing = do
     putStrLn "Input validation failed, enter the rule Volfram code again. "
