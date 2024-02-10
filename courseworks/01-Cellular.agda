@@ -48,7 +48,7 @@
 -- Quantifiers           9   MARKS   -- 9  - 60
 -- Membership            15  MARKS   -- 15  - 75
 -- Cellular automaton    10  MARKS   -- 10   - 85
--- Extension             15  MARKS   -- input validation, custom rules, cycle detection
+-- Extension             15  MARKS   -- custom rules, input validation, cycle detection, circular array
 --
 -- TOTAL                 100 MARKS
 
