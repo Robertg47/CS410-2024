@@ -35,7 +35,7 @@
 -- Word8 and Pixel         6 MARKS -- 6   -- 46
 -- Image                   4 MARKS -- 4   -- 50
 -- Tile                   35 MARKS -- 35  -- 85
--- Extension              15 MARKS 
+-- Extension              15 MARKS -- 90,180,270 degree rotation, CLI for selecting file to save, color inversion
 --
 -- TOTAL                 100 MARKS
 ------------------------------------------------------------------------
