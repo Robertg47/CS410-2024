@@ -501,7 +501,7 @@ module List<P where
 
   -- (3 MARKS)
   length-++ : (xs ys : List< A) → length (xs ++ ys) ≡ length xs + length ys
-  length-++ xs [] = simplify xs
+  length-++ xs [] = {!!}
   length-++ xs (ys -, x) = transitive (cong suc (length-++ xs ys)) (symmetric (+-suc (length xs) (length ys)))
 
 -- have: length (xs ++ ys) ≡ length xs + length ys
@@ -954,6 +954,10 @@ insert (false ,- list) (leaf x) = leaf false <> insert list (leaf false)
 insert [] (tree <> tree₁) = (tree <> tree₁)  -- impossible case considering calls have fixed length
 insert (true ,- list) (left <> right) = insert list left <> right
 insert (false ,- list) (left <> right) = left <> insert list right
+
+
+insert' : List> Bool -> Tree Bool
+insert' xs = insert xs (leaf false)
 
 
 contains : List> Bool -> Tree Bool -> Bool
